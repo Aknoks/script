@@ -1,5 +1,7 @@
 local library = {flags = {}, windows = {}, open = true}
 
+-- Everything made by Jan
+
 --Services
 local runService = game:GetService"RunService"
 local tweenService = game:GetService"TweenService"

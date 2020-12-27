@@ -1,4 +1,4 @@
--- Everything made by Phoenixx
+-- UI Library made by Phoenixx
 
 if not HttpGet then
 	HttpGet = function(url, ...) return game:HttpGet(url, ...) end

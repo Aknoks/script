@@ -235,7 +235,7 @@ function Forums.new(newName)
 
         sectionMain.Name = "sectionMain"
         sectionMain.Parent = newPage
-        sectionMain.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+        sectionMain.BackgroundColor3 = Color3.fromRGB(32, 32, 32)
         sectionMain.BorderColor3 = Color3.fromRGB(27, 27, 27)
         sectionMain.ClipsDescendants = true
         sectionMain.Position = UDim2.new(0, 0, 0.0040487065, 0)

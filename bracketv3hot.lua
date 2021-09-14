@@ -56,7 +56,7 @@ function Library:CreateWindow(Config, Parent)
 	Screen.Name =  HttpService:GenerateGUID(false)
 	Screen.Parent = Parent
 	Topbar.WindowName.Text = Config.WindowName
-	Topbar.LibraryName.Text = "lol"
+	Topbar.LibraryName.Text = tostring(game:GetService("MarketplaceService"):GetProductInfo(game.PlaceId).Name)
 
 	MakeDraggable(Topbar,Main)
 	local function CloseAll()

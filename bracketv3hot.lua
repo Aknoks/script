@@ -5,6 +5,7 @@ local HttpService = game:GetService("HttpService")
 local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
 local MarketplaceService = game:GetService("MarketplaceService")
+GetName = game:GetService("MarketplaceService"):GetProductInfo(game.PlaceId).Name
 
 local function MakeDraggable(ClickObject, Object)
 	local Dragging = nil
@@ -57,7 +58,7 @@ function Library:CreateWindow(Config, Parent)
 	Screen.Name =  HttpService:GenerateGUID(false)
 	Screen.Parent = Parent
 	Topbar.WindowName.Text = Config.WindowName
-	Topbar.LibraryName.Text = game.PlaceId
+	Topbar.LibraryName.Text = GetName
 
 	MakeDraggable(Topbar,Main)
 	local function CloseAll()

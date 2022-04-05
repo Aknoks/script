@@ -1,0 +1,81 @@
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/bloodball/-back-ups-for-libs/main/un-named%20backups/jans", true))()
+
+local Window = Library:CreateWindow("FORCE")
+
+local Window2 = Library:CreateWindow("ESPs")
+
+LocalP = game.Players.LocalPlayer
+
+N = game:GetService("VirtualInputManager")
+getgenv().TrinketCD = true
+
+Window:AddToggle({text = "Trinket Farm", callback = function(bool) 
+    if bool then
+        TrinketFarm = game:GetService('RunService').RenderStepped:Connect(function()
+            for i,v in pairs(game.Workspace:GetChildren()) do
+                if v.Name == "" then
+                    if v:FindFirstChild("Ready") then
+                        if v.Ready.Value == false then
+                            if TrinketCD == true then
+                                getgenv().TrinketCD = false
+                                LocalP.Character.HumanoidRootPart.CFrame = v.CFrame
+                                wait(0.25)
+                                N:SendKeyEvent(true,"E",false,game)
+                                wait(0.50)
+                                getgenv().TrinketCD = true
+                            end
+                        end
+                    end
+                end
+            end
+        end)
+    else
+        TrinketFarm:Disconnect()
+        LocalP.Character:Destroy()
+    end
+end})
+
+Window:AddButton({text = 'No Fall Damage', callback = function() 
+    local BlockedRemote = {
+        "FallDamage",
+    }
+    
+    local Events = {
+        Fire = true, 
+        Invoke = true, 
+        FireServer = true, 
+        InvokeServer = true,
+    }
+    
+    local gameMeta = getrawmetatable(game)
+    local psuedoEnv = {
+        ["__index"] = gameMeta.__index,
+        ["__namecall"] = gameMeta.__namecall;
+    }
+    setreadonly(gameMeta, false)
+    gameMeta.__index, gameMeta.__namecall = newcclosure(function(self, index, ...)
+        if Events[index] then
+            for i,v in pairs(BlockedRemotes) do
+                if v == self.Name and not checkcaller() then return nil end
+            end
+        end
+        return psuedoEnv.__index(self, index, ...)
+    end)
+    setreadonly(gameMeta, true)
+end})
+
+local ESP = loadstring(game:HttpGet("https://raw.githubusercontent.com/Aknoks/script/main/hotkiriotesplib"))()
+
+ESP.Tracers = false
+ESP.Boxes = false
+ESP.Names = true
+
+Window2:AddToggle({text = "Player ESP", callback = function(bool) 
+    if bool then
+        ESP:Toggle(true)
+    else
+        ESP:Toggle(false)
+    end
+end})
+
+Library:Init()

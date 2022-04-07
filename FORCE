@@ -20,7 +20,9 @@ Window:AddToggle({text = "Trinket Farm", callback = function(bool)
                                 getgenv().TrinketCD = false
                                 LocalP.Character.HumanoidRootPart.CFrame = v.CFrame
                                 wait(0.25)
-                                N:SendKeyEvent(true,"E",false,game)
+                                if Collect then
+                                    N:SendKeyEvent(true,"E",false,game)
+                                end
                                 wait(0.50)
                                 getgenv().TrinketCD = true
                             end
@@ -31,7 +33,14 @@ Window:AddToggle({text = "Trinket Farm", callback = function(bool)
         end)
     else
         TrinketFarm:Disconnect()
-        LocalP.Character:Destroy()
+    end
+end})
+
+Window:AddToggle({text = "Auto Collect", callback = function(bool) 
+    if bool then
+        getgenv().Collect = true
+    else
+        getgenv().Collect = false
     end
 end})
 

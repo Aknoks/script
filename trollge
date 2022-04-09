@@ -1,0 +1,27 @@
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/bloodball/-back-ups-for-libs/main/un-named%20backups/jans", true))()
+
+local Window = Library:CreateWindow("TROLLGE")
+
+items = {"blood", "mysterious cup", "sorrow cup", "oil", "nights essence"}
+
+Window:AddToggle({text = "Item Farm", callback = function(bool)
+    if bool then
+        item = game:GetService("RunService").RenderStepped:Connect(function()
+            for i,v in pairs(game.Workspace:GetChildren()) do
+                if v:IsA("Tool") then
+                    if table.find(items, v.Name) then
+                        if (Vector3.new(-34.4557, -490.146, 13.8419) - v.Handle.Position).Magnitude > 100 then
+                            firetouchinterest(v.Handle, game.Players.LocalPlayer.Character.HumanoidRootPart, 1)
+                            wait()
+                            firetouchinterest(v.Handle, game.Players.LocalPlayer.Character.HumanoidRootPart, 0)
+                        end
+                    end
+                end
+            end
+        end)
+    else
+        item:Disconnect()
+    end
+end})
+
+Library:Init()

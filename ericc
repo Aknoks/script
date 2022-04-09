@@ -1,0 +1,198 @@
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/bloodball/-back-ups-for-libs/main/un-named%20backups/jans", true))()
+
+local Window = Library:CreateWindow("Tradelands for ericc")
+
+player = game.Players.LocalPlayer
+
+function Swing()
+    local ohString1 = "left"
+    local ohTable2 = {
+        [1] = {
+            [1] = player.Character.HumanoidRootPart,
+            [2] = 3
+        },
+        [2] = {
+            [1] = player.Character.Head,
+            [2] = 1
+        },
+        [3] = {
+            [1] = player.Character.LeftHand,
+            [2] = 1
+        },
+        [4] = {
+            [1] = player.Character.RightHand,
+            [2] = 1
+        },
+        [5] = {
+            [1] = player.Character.LeftLowerArm,
+            [2] = 2
+        },
+        [6] = {
+            [1] = player.Character.RightLowerArm,
+            [2] = 2
+        },
+        [7] = {
+            [1] = player.Character.LeftUpperArm,
+            [2] = 2
+        },
+        [8] = {
+            [1] = player.Character.RightUpperArm,
+            [2] = 2
+        },
+        [9] = {
+            [1] = player.Character.LeftFoot,
+            [2] = 1
+        },
+        [10] = {
+            [1] = player.Character.LeftLowerLeg,
+            [2] = 2
+        },
+        [11] = {
+            [1] = player.Character.UpperTorso,
+            [2] = 3
+        },
+        [12] = {
+            [1] = player.Character.LeftUpperLeg,
+            [2] = 2
+        },
+        [13] = {
+            [1] = player.Character.RightFoot,
+            [2] = 1
+        },
+        [14] = {
+            [1] = player.Character.RightLowerLeg,
+            [2] = 2
+        },
+        [15] = {
+            [1] = player.Character.LowerTorso,
+            [2] = 2
+        },
+        [16] = {
+            [1] = player.Character.RightUpperLeg,
+            [2] = 2
+        }
+    }
+
+    player.Character.ActiveGear.ToolScript.Swing:FireServer(ohString1, ohTable2)
+end
+
+function Warehouse(quantity, thing)
+    local ohTable1 = {
+        [1] = thing,
+        [2] = 8,
+        [3] = 0,
+        [4] = 0,
+        [5] = 4
+    }
+    local ohNumber2 = quantity
+    
+    game:GetService("ReplicatedStorage").RemoteFunctionz.Items.MoveToWarehouse:FireServer(ohTable1, ohNumber2)
+end
+
+function NoClip()
+    for _, child in pairs(player.Character:GetDescendants()) do
+        if child:IsA("BasePart") and child.CanCollide == true then
+            child.CanCollide = false
+        end
+    end
+end
+
+
+local function Closest(model)
+    local character = player.Character
+    local root = character and character.PrimaryPart
+
+    if root == nil then return end
+
+    local studs = math.huge
+    local part;
+
+    for _, obj in ipairs(model:GetDescendants()) do
+        if obj:IsA('BasePart') and obj.Name == "Stump" and obj.Parent:FindFirstChild("Leaves") then
+            local distance = (root.Position - obj.Position).Magnitude
+            if distance < studs then
+                studs = distance
+                part = obj
+            end
+        end
+    end
+
+    return part
+end
+
+local function Closest2(model)
+    local character = player.Character
+    local root = character and character.PrimaryPart
+
+    if root == nil then return end
+
+    local studs = math.huge
+    local part;
+
+    for _, obj in ipairs(model:GetDescendants()) do
+        if obj:IsA('BasePart') and obj.Name == "OreNode" and obj.Broken.Value == false then
+            local distance = (root.Position - obj.Position).Magnitude
+            if distance < studs then
+                studs = distance
+                part = obj
+            end
+        end
+    end
+
+    return part
+end
+
+getgenv().speed = 200
+getgenv().distance = -4
+
+Window:AddToggle({text = "Auto Chop Wood", callback = function(bool)
+    if bool then
+        chopwood = game:GetService("RunService").Stepped:Connect(function()
+            if player.PlayerGui.GameGui.Inventory.ScrollingFrame:FindFirstChild("Oak") then
+                if player.PlayerGui.GameGui.Inventory.ScrollingFrame.Oak.Quantity.Text > "0" then
+                    Warehouse(tonumber(player.PlayerGui.GameGui.Inventory.ScrollingFrame.Oak.Quantity.Text), "Oak")
+                end
+            end
+            NoClip()
+            Target = Closest(game.Workspace.Trees)
+            local Tween = game:service'TweenService':Create(player.Character.HumanoidRootPart, TweenInfo.new(player:DistanceFromCharacter(Target.Position + Vector3.new(0, 100, 0)) / speed, Enum.EasingStyle.Linear, Enum.EasingDirection.Out), {CFrame = Target.CFrame + Target.CFrame.LookVector * distance})
+            Tween:Play()
+            wait(player:DistanceFromCharacter(Target.Position + Vector3.new(0, 100, 0))/speed + 0)
+            Swing()
+        end)
+    else
+        chopwood:Disconnect()
+        for _, child in pairs(player.Character:GetDescendants()) do
+            if child:IsA("BasePart") or child:IsA("MeshPart") and child.CanCollide == false then
+                child.CanCollide = true
+            end
+        end
+    end
+end})
+
+Window:AddToggle({text = "Auto Mine", callback = function(bool)
+    if bool then
+        chopwood = game:GetService("RunService").Stepped:Connect(function()
+            if player.PlayerGui.GameGui.Inventory.ScrollingFrame:FindFirstChild("Iron") then
+                if player.PlayerGui.GameGui.Inventory.ScrollingFrame.Iron.Quantity.Text > "0" then
+                    Warehouse(tonumber(player.PlayerGui.GameGui.Inventory.ScrollingFrame.Iron.Quantity.Text), "Iron")
+                end
+            end
+            NoClip()
+            Target = Closest2(game.Workspace.OreNodes)
+            local Tween = game:service'TweenService':Create(player.Character.HumanoidRootPart, TweenInfo.new(player:DistanceFromCharacter(Target.Position + Vector3.new(0, 100, 0)) / speed, Enum.EasingStyle.Linear, Enum.EasingDirection.Out), {CFrame = Target.CFrame + Target.CFrame.LookVector * distance})
+            Tween:Play()
+            wait(player:DistanceFromCharacter(Target.Position + Vector3.new(0, 100, 0))/speed + 0)
+            Swing()
+        end)
+    else
+        chopwood:Disconnect()
+        for _, child in pairs(player.Character:GetDescendants()) do
+            if child:IsA("BasePart") or child:IsA("MeshPart") and child.CanCollide == false then
+                child.CanCollide = true
+            end
+        end
+    end
+end})
+
+Library:Init()

@@ -57,7 +57,8 @@ function Library:CreateWindow(Config, Parent)
 	Screen.Name =  HttpService:GenerateGUID(false)
 	Screen.Parent = Parent
 	Topbar.WindowName.Text = Config.WindowName
-	Topbar.LibraryName.Text = "ntm"
+	Topbar.LibraryName.Visible = true
+	Topbar.LibraryName.Text = Config.Version
 
 	MakeDraggable(Topbar,Main)
 	local function CloseAll()

@@ -240,7 +240,7 @@ Window:AddToggle({text = "Auto Chop Wood", callback = function(bool)
                     wait(player:DistanceFromCharacter(Target.Position + Vector3.new(0, 100, 0))/speed + 0)
                     Swing()
                 end
-            elseif player.PlayerGui.GameGui.Inventory.ScrollingFrame:FindFirstChild("Pickaxe") then
+            elseif player.PlayerGui.GameGui.Inventory.ScrollingFrame:FindFirstChild("Axe") then
                 SwapAxe()
             elseif AxeCallback then
                 getgenv().AxeCallback = false

@@ -4,6 +4,9 @@ local Window = Library:CreateWindow("Tradelands for ericc")
 
 player = game.Players.LocalPlayer
 
+getgenv().PickaxeCallback = true
+getgenv().AxeCallback = true
+
 function Swing()
     local ohString1 = "left"
     local ohTable2 = {
@@ -89,6 +92,19 @@ function Warehouse(quantity, thing)
     game:GetService("ReplicatedStorage").RemoteFunctionz.Items.MoveToWarehouse:FireServer(ohTable1, ohNumber2)
 end
 
+function GetWarehouse(quantity, thing)
+    local ohTable1 = {
+        [1] = thing,
+        [2] = 7,
+        [3] = 0,
+        [4] = 0,
+        [5] = 5.6000000000000005
+    }
+    local ohNumber2 = quantity
+    
+    game:GetService("ReplicatedStorage").RemoteFunctionz.Items.MoveFromWarehouse:FireServer(ohTable1, ohNumber2)
+end
+
 function NoClip()
     for _, child in pairs(player.Character:GetDescendants()) do
         if child:IsA("BasePart") and child.CanCollide == true then
@@ -142,23 +158,98 @@ local function Closest2(model)
     return part
 end
 
+function CraftAxe()
+    local ohString1 = "Axe"
+    local ohString2 = "Oak"
+    local ohString3 = "Iron"
+    local ohTable4 = {
+        [1] = {
+            [1] = "Iron",
+            [2] = 5
+        },
+        [2] = {
+            [1] = "Oak",
+            [2] = 7
+        }
+    }
+
+    game:GetService("ReplicatedStorage").RemoteFunctionz.Items.Craft:InvokeServer(ohString1, ohString2, ohString3, ohTable4)
+end
+
+function CraftPickaxe()
+    local ohString1 = "Pickaxe"
+    local ohString2 = "Oak"
+    local ohString3 = "Iron"
+    local ohTable4 = {
+        [1] = {
+            [1] = "Iron",
+            [2] = 7
+        },
+        [2] = {
+            [1] = "Oak",
+            [2] = 5
+        }
+    }
+
+    game:GetService("ReplicatedStorage").RemoteFunctionz.Items.Craft:InvokeServer(ohString1, ohString2, ohString3, ohTable4)
+end
+
+function SwapPickaxe()
+    local ohNumber1 = 1
+    local ohTable2 = {
+        [1] = "Pickaxe",
+        [2] = "100/100",
+        [3] = 1,
+        [4] = 2,
+        [5] = 6
+    }
+    
+    game:GetService("ReplicatedStorage").RemoteFunctionz.Items.InventorySwap:FireServer(ohNumber1, ohTable2)
+end
+
+function SwapAxe()
+    local ohNumber1 = 1
+    local ohTable2 = {
+        [1] = "Axe",
+        [2] = "100/100",
+        [3] = 1,
+        [4] = 2,
+        [5] = 6
+    }
+
+    game:GetService("ReplicatedStorage").RemoteFunctionz.Items.InventorySwap:FireServer(ohNumber1, ohTable2)
+end
+
 getgenv().speed = 200
 getgenv().distance = -4
 
 Window:AddToggle({text = "Auto Chop Wood", callback = function(bool)
     if bool then
         chopwood = game:GetService("RunService").Stepped:Connect(function()
-            if player.PlayerGui.GameGui.Inventory.ScrollingFrame:FindFirstChild("Oak") then
-                if player.PlayerGui.GameGui.Inventory.ScrollingFrame.Oak.Quantity.Text > "0" then
-                    Warehouse(tonumber(player.PlayerGui.GameGui.Inventory.ScrollingFrame.Oak.Quantity.Text), "Oak")
+            if player.PlayerGui.GameGui.Inventory.Slot_1.ItemName.Value == "Axe" or player.PlayerGui.GameGui.Inventory.Slot_2.ItemName.Value == "Axe" or player.PlayerGui.GameGui.Inventory.Slot_3.ItemName.Value == "Axe" then
+                Target = Closest(game.Workspace.Trees)
+                if (player.Character.HumanoidRootPart.Position - Target.Position).Magnitude <= 3000 then
+                    if player.PlayerGui.GameGui.Inventory.ScrollingFrame:FindFirstChild("Oak") then
+                        if player.PlayerGui.GameGui.Inventory.ScrollingFrame.Oak.Quantity.Text > "0" then
+                            Warehouse(tonumber(player.PlayerGui.GameGui.Inventory.ScrollingFrame.Oak.Quantity.Text), "Oak")
+                        end
+                    end
+                    NoClip()
+                    local Tween = game:service'TweenService':Create(player.Character.HumanoidRootPart, TweenInfo.new(player:DistanceFromCharacter(Target.Position + Vector3.new(0, 100, 0)) / speed, Enum.EasingStyle.Linear, Enum.EasingDirection.Out), {CFrame = Target.CFrame + Target.CFrame.LookVector * distance})
+                    Tween:Play()
+                    wait(player:DistanceFromCharacter(Target.Position + Vector3.new(0, 100, 0))/speed + 0)
+                    Swing()
                 end
+            elseif player.PlayerGui.GameGui.Inventory.ScrollingFrame:FindFirstChild("Pickaxe") then
+                SwapAxe()
+            elseif AxeCallback then
+                getgenv().AxeCallback = false
+                GetWarehouse(5, "Iron")
+                GetWarehouse(7, "Oak")
+                CraftAxe()
+                task.wait(0.5)
+                getgenv().AxeCallback = true
             end
-            NoClip()
-            Target = Closest(game.Workspace.Trees)
-            local Tween = game:service'TweenService':Create(player.Character.HumanoidRootPart, TweenInfo.new(player:DistanceFromCharacter(Target.Position + Vector3.new(0, 100, 0)) / speed, Enum.EasingStyle.Linear, Enum.EasingDirection.Out), {CFrame = Target.CFrame + Target.CFrame.LookVector * distance})
-            Tween:Play()
-            wait(player:DistanceFromCharacter(Target.Position + Vector3.new(0, 100, 0))/speed + 0)
-            Swing()
         end)
     else
         chopwood:Disconnect()
@@ -173,17 +264,30 @@ end})
 Window:AddToggle({text = "Auto Mine", callback = function(bool)
     if bool then
         chopwood = game:GetService("RunService").Stepped:Connect(function()
-            if player.PlayerGui.GameGui.Inventory.ScrollingFrame:FindFirstChild("Iron") then
-                if player.PlayerGui.GameGui.Inventory.ScrollingFrame.Iron.Quantity.Text > "0" then
-                    Warehouse(tonumber(player.PlayerGui.GameGui.Inventory.ScrollingFrame.Iron.Quantity.Text), "Iron")
+            if player.PlayerGui.GameGui.Inventory.Slot_1.ItemName.Value == "Pickaxe" or player.PlayerGui.GameGui.Inventory.Slot_2.ItemName.Value == "Pickaxe" or player.PlayerGui.GameGui.Inventory.Slot_3.ItemName.Value == "Pickaxe" then
+                Target = Closest2(game.Workspace.OreNodes)
+                if (player.Character.HumanoidRootPart.Position - Target.Position).Magnitude <= 3000 then
+                    if player.PlayerGui.GameGui.Inventory.ScrollingFrame:FindFirstChild("Iron") then
+                        if player.PlayerGui.GameGui.Inventory.ScrollingFrame.Iron.Quantity.Text > "0" then
+                            Warehouse(tonumber(player.PlayerGui.GameGui.Inventory.ScrollingFrame.Iron.Quantity.Text), "Iron")
+                        end
+                    end
+                    NoClip()
+                    local Tween = game:service'TweenService':Create(player.Character.HumanoidRootPart, TweenInfo.new(player:DistanceFromCharacter(Target.Position + Vector3.new(0, 100, 0)) / speed, Enum.EasingStyle.Linear, Enum.EasingDirection.Out), {CFrame = Target.CFrame + Target.CFrame.LookVector * distance})
+                    Tween:Play()
+                    wait(player:DistanceFromCharacter(Target.Position + Vector3.new(0, 100, 0))/speed + 0)
+                    Swing()
                 end
+            elseif player.PlayerGui.GameGui.Inventory.ScrollingFrame:FindFirstChild("Pickaxe") then
+                SwapPickaxe()
+            elseif PickaxeCallback then
+                getgenv().PickaxeCallback = false
+                GetWarehouse(7, "Iron")
+                GetWarehouse(5, "Oak")
+                CraftPickaxe()
+                task.wait(0.5)
+                getgenv().PickaxeCallback = true
             end
-            NoClip()
-            Target = Closest2(game.Workspace.OreNodes)
-            local Tween = game:service'TweenService':Create(player.Character.HumanoidRootPart, TweenInfo.new(player:DistanceFromCharacter(Target.Position + Vector3.new(0, 100, 0)) / speed, Enum.EasingStyle.Linear, Enum.EasingDirection.Out), {CFrame = Target.CFrame + Target.CFrame.LookVector * distance})
-            Tween:Play()
-            wait(player:DistanceFromCharacter(Target.Position + Vector3.new(0, 100, 0))/speed + 0)
-            Swing()
         end)
     else
         chopwood:Disconnect()

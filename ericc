@@ -244,7 +244,7 @@ Window:AddToggle({text = "Auto Chop Wood", callback = function(bool)
                         Swing()
                     end
                 else
-                    Virtual:SendKeyEvent(true,"&",false,game)
+                    game:GetService("ReplicatedStorage").RemoteFunctionz.Gear.Equip:FireServer(true, 1, "Axe", 1, 2)
                 end
             elseif player.PlayerGui.GameGui.Inventory.ScrollingFrame:FindFirstChild("Pickaxe") then
                 SwapAxe()
@@ -286,7 +286,7 @@ Window:AddToggle({text = "Auto Mine", callback = function(bool)
                         Swing()
                     end
                 else
-                    Virtual:SendKeyEvent(true,"é",false,game)
+                    game:GetService("ReplicatedStorage").RemoteFunctionz.Gear.Equip:FireServer(true, 2, "Pickaxe", 1, 2)
                 end
             elseif player.PlayerGui.GameGui.Inventory.ScrollingFrame:FindFirstChild("Pickaxe") then
                 SwapPickaxe()

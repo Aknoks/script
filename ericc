@@ -7,6 +7,8 @@ player = game.Players.LocalPlayer
 getgenv().PickaxeCallback = true
 getgenv().AxeCallback = true
 
+local Virtual = game:GetService("VirtualInputManager")
+
 function Swing()
     local ohString1 = "left"
     local ohTable2 = {
@@ -195,7 +197,7 @@ function CraftPickaxe()
 end
 
 function SwapPickaxe()
-    local ohNumber1 = 1
+    local ohNumber1 = 2
     local ohTable2 = {
         [1] = "Pickaxe",
         [2] = "100/100",
@@ -227,20 +229,24 @@ Window:AddToggle({text = "Auto Chop Wood", callback = function(bool)
     if bool then
         chopwood = game:GetService("RunService").Stepped:Connect(function()
             if player.PlayerGui.GameGui.Inventory.Slot_1.ItemName.Value == "Axe" or player.PlayerGui.GameGui.Inventory.Slot_2.ItemName.Value == "Axe" or player.PlayerGui.GameGui.Inventory.Slot_3.ItemName.Value == "Axe" then
-                Target = Closest(game.Workspace.Trees)
-                if (player.Character.HumanoidRootPart.Position - Target.Position).Magnitude <= 3000 then
-                    if player.PlayerGui.GameGui.Inventory.ScrollingFrame:FindFirstChild("Oak") then
-                        if player.PlayerGui.GameGui.Inventory.ScrollingFrame.Oak.Quantity.Text > "0" then
-                            Warehouse(tonumber(player.PlayerGui.GameGui.Inventory.ScrollingFrame.Oak.Quantity.Text), "Oak")
+                if player.Character:FindFirstChild("ActiveGear") then
+                    Target = Closest(game.Workspace.Trees)
+                    if (player.Character.HumanoidRootPart.Position - Target.Position).Magnitude <= 3000 then
+                        if player.PlayerGui.GameGui.Inventory.ScrollingFrame:FindFirstChild("Oak") then
+                            if player.PlayerGui.GameGui.Inventory.ScrollingFrame.Oak.Quantity.Text > "0" then
+                                Warehouse(tonumber(player.PlayerGui.GameGui.Inventory.ScrollingFrame.Oak.Quantity.Text), "Oak")
+                            end
                         end
+                        NoClip()
+                        local Tween = game:service'TweenService':Create(player.Character.HumanoidRootPart, TweenInfo.new(player:DistanceFromCharacter(Target.Position + Vector3.new(0, 100, 0)) / speed, Enum.EasingStyle.Linear, Enum.EasingDirection.Out), {CFrame = Target.CFrame + Target.CFrame.LookVector * distance})
+                        Tween:Play()
+                        wait(player:DistanceFromCharacter(Target.Position + Vector3.new(0, 100, 0))/speed + 0)
+                        Swing()
                     end
-                    NoClip()
-                    local Tween = game:service'TweenService':Create(player.Character.HumanoidRootPart, TweenInfo.new(player:DistanceFromCharacter(Target.Position + Vector3.new(0, 100, 0)) / speed, Enum.EasingStyle.Linear, Enum.EasingDirection.Out), {CFrame = Target.CFrame + Target.CFrame.LookVector * distance})
-                    Tween:Play()
-                    wait(player:DistanceFromCharacter(Target.Position + Vector3.new(0, 100, 0))/speed + 0)
-                    Swing()
+                else
+                    Virtual:SendKeyEvent(true,"&",false,game)
                 end
-            elseif player.PlayerGui.GameGui.Inventory.ScrollingFrame:FindFirstChild("Axe") then
+            elseif player.PlayerGui.GameGui.Inventory.ScrollingFrame:FindFirstChild("Pickaxe") then
                 SwapAxe()
             elseif AxeCallback then
                 getgenv().AxeCallback = false
@@ -265,18 +271,22 @@ Window:AddToggle({text = "Auto Mine", callback = function(bool)
     if bool then
         chopwood = game:GetService("RunService").Stepped:Connect(function()
             if player.PlayerGui.GameGui.Inventory.Slot_1.ItemName.Value == "Pickaxe" or player.PlayerGui.GameGui.Inventory.Slot_2.ItemName.Value == "Pickaxe" or player.PlayerGui.GameGui.Inventory.Slot_3.ItemName.Value == "Pickaxe" then
-                Target = Closest2(game.Workspace.OreNodes)
-                if (player.Character.HumanoidRootPart.Position - Target.Position).Magnitude <= 3000 then
-                    if player.PlayerGui.GameGui.Inventory.ScrollingFrame:FindFirstChild("Iron") then
-                        if player.PlayerGui.GameGui.Inventory.ScrollingFrame.Iron.Quantity.Text > "0" then
-                            Warehouse(tonumber(player.PlayerGui.GameGui.Inventory.ScrollingFrame.Iron.Quantity.Text), "Iron")
+                if player.Character:FindFirstChild("ActiveGear") then
+                    Target = Closest2(game.Workspace.OreNodes)
+                    if (player.Character.HumanoidRootPart.Position - Target.Position).Magnitude <= 3000 then
+                        if player.PlayerGui.GameGui.Inventory.ScrollingFrame:FindFirstChild("Iron") then
+                            if player.PlayerGui.GameGui.Inventory.ScrollingFrame.Iron.Quantity.Text > "0" then
+                                Warehouse(tonumber(player.PlayerGui.GameGui.Inventory.ScrollingFrame.Iron.Quantity.Text), "Iron")
+                            end
                         end
+                        NoClip()
+                        local Tween = game:service'TweenService':Create(player.Character.HumanoidRootPart, TweenInfo.new(player:DistanceFromCharacter(Target.Position + Vector3.new(0, 100, 0)) / speed, Enum.EasingStyle.Linear, Enum.EasingDirection.Out), {CFrame = Target.CFrame + Target.CFrame.LookVector * distance})
+                        Tween:Play()
+                        wait(player:DistanceFromCharacter(Target.Position + Vector3.new(0, 100, 0))/speed + 0)
+                        Swing()
                     end
-                    NoClip()
-                    local Tween = game:service'TweenService':Create(player.Character.HumanoidRootPart, TweenInfo.new(player:DistanceFromCharacter(Target.Position + Vector3.new(0, 100, 0)) / speed, Enum.EasingStyle.Linear, Enum.EasingDirection.Out), {CFrame = Target.CFrame + Target.CFrame.LookVector * distance})
-                    Tween:Play()
-                    wait(player:DistanceFromCharacter(Target.Position + Vector3.new(0, 100, 0))/speed + 0)
-                    Swing()
+                else
+                    Virtual:SendKeyEvent(true,"é",false,game)
                 end
             elseif player.PlayerGui.GameGui.Inventory.ScrollingFrame:FindFirstChild("Pickaxe") then
                 SwapPickaxe()

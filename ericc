@@ -7,8 +7,6 @@ player = game.Players.LocalPlayer
 getgenv().PickaxeCallback = true
 getgenv().AxeCallback = true
 
-local Virtual = game:GetService("VirtualInputManager")
-
 function Swing()
     local ohString1 = "left"
     local ohTable2 = {

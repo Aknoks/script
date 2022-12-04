@@ -1011,7 +1011,7 @@ do
         });
     end;
 
-    function Funcs:AddLabel(Text, DoesWrap)
+    function Funcs:AddLabel(Text, DoesWrap, Name)
         local Label = {};
 
         local Groupbox = self;
@@ -1021,6 +1021,7 @@ do
             Size = UDim2.new(1, -4, 0, 15);
             TextSize = 14;
             Text = Text;
+            Name = Name;
             TextWrapped = DoesWrap or false,
             RichText = true,
             TextXAlignment = Enum.TextXAlignment.Left;
